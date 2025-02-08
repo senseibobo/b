@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://6x6b1vtmy11y"]
+
+[ext_resource type="PackedScene" uid="uid://caw7ke00kdes2" path="res://cards/card.tscn" id="1_srvxm"]
+[ext_resource type="Script" path="res://cards/trick/trick_card.gd" id="2_nxb8r"]
+
+[node name="TrickCard" instance=ExtResource("1_srvxm")]
+script = ExtResource("2_nxb8r")
+cost = 0
+
+[node name="TopCardRankTextureRect" parent="." index="2"]
+visible = false
+
+[node name="BottomCardRankTextureRect" parent="." index="3"]
+visible = false

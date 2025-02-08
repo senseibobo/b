@@ -1,0 +1,135 @@
+[gd_scene load_steps=5 format=3 uid="uid://caw7ke00kdes2"]
+
+[ext_resource type="Script" path="res://cards/card.gd" id="1_7lmaa"]
+[ext_resource type="Texture2D" uid="uid://b2wpry56w1urh" path="res://icon.svg" id="1_uv61j"]
+[ext_resource type="Texture2D" uid="uid://bg6ow7goakpwv" path="res://textures/2.svg" id="2_bgl7o"]
+[ext_resource type="Texture2D" uid="uid://bpo7u84tkapav" path="res://textures/clubs.svg" id="4_jwgn8"]
+
+[node name="Card" type="Control" node_paths=PackedStringArray("card_face_texture_rect", "top_card_rank_texture_rect", "bottom_card_rank_texture_rect", "top_card_suit_texture_rect", "bottom_card_suit_texture_rect", "card_selectable_color_rect", "card_back_face_texture_rect") groups=["card"]]
+custom_minimum_size = Vector2(80, 110)
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_7lmaa")
+card_face_texture_rect = NodePath("CardFaceTextureRect")
+top_card_rank_texture_rect = NodePath("TopCardRankTextureRect")
+bottom_card_rank_texture_rect = NodePath("BottomCardRankTextureRect")
+top_card_suit_texture_rect = NodePath("TopCardRankTextureRect/CardSuitTextureRect")
+bottom_card_suit_texture_rect = NodePath("BottomCardRankTextureRect/CardSuitTextureRect")
+card_selectable_color_rect = NodePath("CardSelectable")
+card_back_face_texture_rect = NodePath("CardBackFaceTextureRect")
+
+[node name="CardSelectable" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 0, 1)
+
+[node name="CardFrame" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopCardRankTextureRect" type="TextureRect" parent="."]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 18.0
+offset_bottom = 18.0
+pivot_offset = Vector2(20, 11.5)
+mouse_filter = 2
+texture = ExtResource("2_bgl7o")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardSuitTextureRect" type="TextureRect" parent="TopCardRankTextureRect"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("4_jwgn8")
+expand_mode = 1
+
+[node name="BottomCardRankTextureRect" type="TextureRect" parent="."]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -18.0
+offset_top = -18.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 0
+grow_vertical = 0
+rotation = 3.14159
+pivot_offset = Vector2(8, 8)
+mouse_filter = 2
+texture = ExtResource("2_bgl7o")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardSuitTextureRect" type="TextureRect" parent="BottomCardRankTextureRect"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("4_jwgn8")
+expand_mode = 1
+
+[node name="CardFaceTextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 19.0
+offset_right = -16.0
+offset_bottom = -19.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_uv61j")
+expand_mode = 1
+
+[node name="CardBackFaceTextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_uv61j")
+expand_mode = 1
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

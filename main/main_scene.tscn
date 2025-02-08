@@ -1,0 +1,92 @@
+[gd_scene load_steps=9 format=3 uid="uid://dgoggqcjip6cw"]
+
+[ext_resource type="PackedScene" uid="uid://caw7ke00kdes2" path="res://cards/card.tscn" id="1_4sytf"]
+[ext_resource type="Script" path="res://main/main_scene.gd" id="1_a1t3e"]
+[ext_resource type="Texture2D" uid="uid://b2wpry56w1urh" path="res://icon.svg" id="1_pu3kj"]
+[ext_resource type="PackedScene" uid="uid://6x6b1vtmy11y" path="res://cards/trick/trick_card.tscn" id="3_3emm7"]
+[ext_resource type="Script" path="res://main/other_card_container.gd" id="3_bpqx1"]
+[ext_resource type="Script" path="res://main/hand_container.gd" id="3_ecvgb"]
+[ext_resource type="Script" path="res://main/ace_sleeve.gd" id="6_5vybq"]
+[ext_resource type="Script" path="res://main/deck_container.gd" id="8_wpl0e"]
+
+[node name="MainScene" type="Control" node_paths=PackedStringArray("king_queen_container", "jack_container", "other_card_container", "hand_container")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_a1t3e")
+king_queen_container = NodePath("MainContainer/GameContainer/KingQueenContainer")
+jack_container = NodePath("MainContainer/GameContainer/JackContainer")
+other_card_container = NodePath("MainContainer/GameContainer/OtherCardContainer")
+hand_container = NodePath("MainContainer/Hand/HandContainer")
+card_scene = ExtResource("1_4sytf")
+trick_card_scene = ExtResource("3_3emm7")
+
+[node name="MainContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Hand" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="HandContainer" type="Container" parent="MainContainer/Hand"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_ecvgb")
+cards_out = true
+
+[node name="AceSleeveTextureRect" type="TextureRect" parent="MainContainer/Hand"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+texture = ExtResource("1_pu3kj")
+
+[node name="AceSleeve" type="Container" parent="MainContainer/Hand/AceSleeveTextureRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_5vybq")
+start_ace_position = Vector2(120, 20)
+ace_spacing = Vector2(6, 6)
+
+[node name="GameContainer" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="KingQueenContainer" type="HBoxContainer" parent="MainContainer/GameContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="JackContainer" type="HBoxContainer" parent="MainContainer/GameContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="OtherCardContainer" type="Container" parent="MainContainer/GameContainer"]
+custom_minimum_size = Vector2(0, 360)
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_bpqx1")
+
+[node name="Decks" type="VBoxContainer" parent="MainContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="DeckContainer" type="Container" parent="MainContainer/Decks"]
+custom_minimum_size = Vector2(90, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("8_wpl0e")

@@ -11,8 +11,21 @@ config_version=5
 [application]
 
 config/name="b"
+run/main_scene="res://main/main_scene.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+CardManager="*res://autoload/card_manager.gd"
+
+[display]
+
+window/stretch/mode="canvas_items"
+
+[global_group]
+
+card="Group that all cards are in"
 
 [rendering]
 

@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://c14lln4d2c3ir"]
+
+[ext_resource type="PackedScene" uid="uid://6x6b1vtmy11y" path="res://cards/trick/trick_card.tscn" id="1_m80ui"]
+[ext_resource type="Script" path="res://cards/trick/disappear/disappear_card.gd" id="2_cao0w"]
+
+[node name="DisappearCard" instance=ExtResource("1_m80ui")]
+script = ExtResource("2_cao0w")
+
+[node name="TopCardRankTextureRect" parent="." index="2"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 16.0
+offset_bottom = 16.0
+
+[node name="BottomCardRankTextureRect" parent="." index="3"]
+offset_left = -16.0
+offset_right = 0.0
+
+[node name="CardFaceTextureRect" parent="." index="4"]
+modulate = Color(1, 1, 1, 0.490196)
