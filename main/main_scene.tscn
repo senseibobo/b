@@ -1,13 +1,17 @@
-[gd_scene load_steps=9 format=3 uid="uid://dgoggqcjip6cw"]
+[gd_scene load_steps=13 format=3 uid="uid://dgoggqcjip6cw"]
 
 [ext_resource type="PackedScene" uid="uid://caw7ke00kdes2" path="res://cards/card.tscn" id="1_4sytf"]
 [ext_resource type="Script" path="res://main/main_scene.gd" id="1_a1t3e"]
-[ext_resource type="Texture2D" uid="uid://b2wpry56w1urh" path="res://icon.svg" id="1_pu3kj"]
 [ext_resource type="PackedScene" uid="uid://6x6b1vtmy11y" path="res://cards/trick/trick_card.tscn" id="3_3emm7"]
 [ext_resource type="Script" path="res://main/other_card_container.gd" id="3_bpqx1"]
 [ext_resource type="Script" path="res://main/hand_container.gd" id="3_ecvgb"]
+[ext_resource type="Texture2D" uid="uid://dd8w7vf3erdfn" path="res://textures/hand/hand.png" id="5_05l5g"]
 [ext_resource type="Script" path="res://main/ace_sleeve.gd" id="6_5vybq"]
+[ext_resource type="Texture2D" uid="uid://ca1i1itmt8kv0" path="res://textures/hand/sleeve_above.png" id="7_63vp5"]
+[ext_resource type="Script" path="res://main/horizontal_card_container.gd" id="7_n3rki"]
+[ext_resource type="Texture2D" uid="uid://kcq2heox7ffi" path="res://textures/hand/sleeve_below.png" id="8_sum86"]
 [ext_resource type="Script" path="res://main/deck_container.gd" id="8_wpl0e"]
+[ext_resource type="Texture2D" uid="uid://clix5awyot8b5" path="res://textures/field_background.png" id="12_5tsb1"]
 
 [node name="MainScene" type="Control" node_paths=PackedStringArray("king_queen_container", "jack_container", "other_card_container", "hand_container")]
 layout_mode = 3
@@ -19,7 +23,7 @@ grow_vertical = 2
 script = ExtResource("1_a1t3e")
 king_queen_container = NodePath("MainContainer/GameContainer/KingQueenContainer")
 jack_container = NodePath("MainContainer/GameContainer/JackContainer")
-other_card_container = NodePath("MainContainer/GameContainer/OtherCardContainer")
+other_card_container = NodePath("MainContainer/GameContainer/PanelContainer/MarginContainer/OtherCardContainer")
 hand_container = NodePath("MainContainer/Hand/HandContainer")
 card_scene = ExtResource("1_4sytf")
 trick_card_scene = ExtResource("3_3emm7")
@@ -43,9 +47,12 @@ script = ExtResource("3_ecvgb")
 cards_out = true
 
 [node name="AceSleeveTextureRect" type="TextureRect" parent="MainContainer/Hand"]
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(300, 250)
 layout_mode = 2
-texture = ExtResource("1_pu3kj")
+mouse_filter = 2
+texture = ExtResource("5_05l5g")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="AceSleeve" type="Container" parent="MainContainer/Hand/AceSleeveTextureRect"]
 layout_mode = 1
@@ -55,8 +62,33 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_5vybq")
-start_ace_position = Vector2(120, 20)
-ace_spacing = Vector2(6, 6)
+start_ace_position = Vector2(150, 200)
+ace_spacing = Vector2(6, 1)
+
+[node name="SleeveTextureAbove" type="TextureRect" parent="MainContainer/Hand/AceSleeveTextureRect"]
+z_index = 6
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_63vp5")
+expand_mode = 1
+
+[node name="SleeveTextureBelow" type="TextureRect" parent="MainContainer/Hand/AceSleeveTextureRect/SleeveTextureAbove"]
+show_behind_parent = true
+z_index = -10
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("8_sum86")
+expand_mode = 1
 
 [node name="GameContainer" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
@@ -65,15 +97,31 @@ size_flags_vertical = 4
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="KingQueenContainer" type="HBoxContainer" parent="MainContainer/GameContainer"]
+[node name="KingQueenContainer" type="Container" parent="MainContainer/GameContainer"]
+custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
-alignment = 1
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("7_n3rki")
 
-[node name="JackContainer" type="HBoxContainer" parent="MainContainer/GameContainer"]
+[node name="JackContainer" type="Container" parent="MainContainer/GameContainer"]
+custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
-alignment = 1
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("7_n3rki")
 
-[node name="OtherCardContainer" type="Container" parent="MainContainer/GameContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MainContainer/GameContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer/GameContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="OtherCardContainer" type="Container" parent="MainContainer/GameContainer/PanelContainer/MarginContainer"]
 custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 size_flags_vertical = 3
@@ -82,11 +130,33 @@ script = ExtResource("3_bpqx1")
 [node name="Decks" type="VBoxContainer" parent="MainContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+theme_override_constants/separation = 100
 alignment = 1
 
-[node name="DeckContainer" type="Container" parent="MainContainer/Decks"]
+[node name="NormalDeckContainer" type="Container" parent="MainContainer/Decks"]
 custom_minimum_size = Vector2(90, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("8_wpl0e")
+
+[node name="TrickDeckContainer" type="Container" parent="MainContainer/Decks"]
+custom_minimum_size = Vector2(90, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("8_wpl0e")
+deck_name = "trick"
+
+[node name="BackgroundTextureRect" type="TextureRect" parent="."]
+modulate = Color(0.637843, 0.637843, 0.637843, 1)
+z_index = -15
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("12_5tsb1")
+expand_mode = 1

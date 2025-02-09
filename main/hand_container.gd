@@ -3,10 +3,7 @@ class_name HandContainer
 extends Container
 
 
-
-
 @export var cards_out: bool = false
-	
 
 
 func _enter_tree():
@@ -20,12 +17,18 @@ func _enter_tree():
 
 
 func _ready():
-	CardManager.game_started.connect(_on_next_turn)
-	CardManager.trick_performed.connect(_on_next_turn)
+	CardManager.trick_performed.connect(_on_trick_performed)
+	CardManager.drew_trick_cards.connect(_on_drew_trick_cards)
+	cards_out = false
 
 
-func _on_next_turn():
-	CardManager.draw_normal_cards(5)
+func _on_trick_performed():
+	cards_out = false
+
+
+func _on_drew_trick_cards():
+	await get_tree().create_timer(0.7).timeout
+	cards_out = true
 
 
 func _process(delta):

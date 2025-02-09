@@ -1,0 +1,39 @@
+[gd_scene load_steps=12 format=3 uid="uid://yduojid2kiuk"]
+
+[ext_resource type="Script" path="res://autoload/sound_manager.gd" id="1_pl644"]
+[ext_resource type="AudioStream" uid="uid://bwu6mia8taaai" path="res://audio/sounds/card_dealing-01.ogg" id="2_cysoo"]
+[ext_resource type="AudioStream" uid="uid://cu53d7q1ujn6r" path="res://audio/sounds/card_dealing-02.ogg" id="3_pg4m4"]
+[ext_resource type="AudioStream" uid="uid://depo1j88rm5lg" path="res://audio/sounds/card_dealing-03.ogg" id="4_n4jco"]
+[ext_resource type="AudioStream" uid="uid://c4ub1kj5p8lra" path="res://audio/sounds/card_dealing-04.ogg" id="5_kx3ny"]
+[ext_resource type="AudioStream" uid="uid://dxsuosgc7xes7" path="res://audio/sounds/flick.ogg" id="6_ictid"]
+[ext_resource type="AudioStream" uid="uid://bkpdyigw23i3" path="res://audio/sounds/flick2.ogg" id="6_ix3pm"]
+[ext_resource type="AudioStream" uid="uid://d10x76at1pu05" path="res://audio/sounds/flick4.ogg" id="7_lq8on"]
+[ext_resource type="AudioStream" uid="uid://wlaxnhqssdo5" path="res://audio/sounds/flick3.ogg" id="8_8hmme"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_gas8w"]
+streams_count = 4
+stream_0/stream = ExtResource("2_cysoo")
+stream_1/stream = ExtResource("3_pg4m4")
+stream_2/stream = ExtResource("4_n4jco")
+stream_3/stream = ExtResource("5_kx3ny")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_qx2nx"]
+random_pitch = 2.0
+streams_count = 4
+stream_0/stream = ExtResource("6_ix3pm")
+stream_1/stream = ExtResource("7_lq8on")
+stream_2/stream = ExtResource("8_8hmme")
+stream_2/weight = 0.0
+stream_3/stream = ExtResource("6_ictid")
+
+[node name="SoundManager" type="Node" node_paths=PackedStringArray("dealing_sound_player", "flick_sound_player")]
+script = ExtResource("1_pl644")
+dealing_sound_player = NodePath("DealingSoundPlayer")
+flick_sound_player = NodePath("FlickSoundPlayer")
+
+[node name="DealingSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_gas8w")
+
+[node name="FlickSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_qx2nx")
+pitch_scale = 1.2

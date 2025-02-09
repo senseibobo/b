@@ -69,6 +69,6 @@ func claim_ace(card: Card):
 	var new_pos = get_next_ace_position()
 	tween.tween_property(card, "global_position", new_pos, 1.0)
 	await tween.finished
-	get_tree().current_scene.remove_child(card)
+	card.get_parent().remove_child(card)
 	add_child(card)
 	card.global_position = new_pos

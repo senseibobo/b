@@ -38,6 +38,10 @@ var in_deck: bool = true:
 
 
 
+func _enter_tree():
+	card_back_face_texture_rect.visible = in_deck
+
+
 func _ready():
 	card_selectable_color_rect.visible = false
 	setup(suit,rank)
@@ -66,6 +70,7 @@ func set_suit(suit: Suit):
 	bottom_card_suit_texture_rect.texture = suit_texture
 	top_card_suit_texture_rect.texture = suit_texture
 	update_suit_color()
+	update_face_texture()
 
 
 func set_rank(rank: int):
@@ -90,6 +95,26 @@ func set_rank(rank: int):
 	bottom_card_rank_texture_rect.texture = rank_texture
 	if rank == 1 and not in_deck:
 		CardManager.on_turned_into_ace(self)
+	update_face_texture()
+
+
+func update_face_texture():
+	if not rank in [1,2,3,4,5,6,7,8,9,10,12,13,14]: return
+	var rank_string: String = str(rank)
+	if rank == 1: rank_string = "a"
+	elif rank == 12: rank_string = "j"
+	elif rank == 13: rank_string = "q"
+	elif rank == 14: rank_string = "k"
+	var suit_string: String
+	match suit:
+		Suit.SPADES: suit_string = "spades"
+		Suit.HEARTS: suit_string = "hearts"
+		Suit.CLUBS: suit_string = "clubs"
+		Suit.DIAMONDS: suit_string = "diamonds"
+	if rank in [12,13,14]:
+		suit_string = "any"
+	var face_texture: Texture2D = load("res://textures/middle/"+rank_string+"-"+suit_string+".svg")
+	card_face_texture_rect.texture = face_texture
 
 
 func update_suit_color():
@@ -106,6 +131,14 @@ func _on_mouse_entered() -> void:
 
 func _on_mouse_exited() -> void:
 	unhover()
+
+
+func _process(delta):
+	if has_meta(&"container_space"):
+		$DebugLabel.text = str(get_meta(&"container_space"))
+		$DebugLabel.visible = false
+	else:
+		$DebugLabel.visible = false
 
 
 func hover():
@@ -129,6 +162,10 @@ func unhover():
 		if tween and tween.is_running(): tween.kill()
 		tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		tween.tween_property(self, "scale", Vector2(1.0,1.0), 0.1)
+
+
+func destroy():
+	CardManager.move_card_to_deck(self)
 
 
 func _input(event: InputEvent):

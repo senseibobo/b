@@ -1,9 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://caw7ke00kdes2"]
+[gd_scene load_steps=8 format=3 uid="uid://caw7ke00kdes2"]
 
 [ext_resource type="Script" path="res://cards/card.gd" id="1_7lmaa"]
-[ext_resource type="Texture2D" uid="uid://b2wpry56w1urh" path="res://icon.svg" id="1_uv61j"]
+[ext_resource type="Texture2D" uid="uid://s4phd8i0v6yq" path="res://textures/card_background.png" id="2_6yucg"]
 [ext_resource type="Texture2D" uid="uid://bg6ow7goakpwv" path="res://textures/2.svg" id="2_bgl7o"]
 [ext_resource type="Texture2D" uid="uid://bpo7u84tkapav" path="res://textures/clubs.svg" id="4_jwgn8"]
+[ext_resource type="Texture2D" uid="uid://uf7osu5lgaeq" path="res://textures/middle/q-any.svg" id="4_lv0wf"]
+[ext_resource type="Texture2D" uid="uid://dxe8tdbbf13su" path="res://textures/card_back.png" id="6_htvh3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xx6j1"]
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Card" type="Control" node_paths=PackedStringArray("card_face_texture_rect", "top_card_rank_texture_rect", "bottom_card_rank_texture_rect", "top_card_suit_texture_rect", "bottom_card_suit_texture_rect", "card_selectable_color_rect", "card_back_face_texture_rect") groups=["card"]]
 custom_minimum_size = Vector2(80, 110)
@@ -35,7 +41,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(1, 1, 0, 1)
 
-[node name="CardFrame" type="ColorRect" parent="."]
+[node name="CardFrame" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,6 +49,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+texture = ExtResource("2_6yucg")
+expand_mode = 1
 
 [node name="TopCardRankTextureRect" type="TextureRect" parent="."]
 modulate = Color(0, 0, 0, 1)
@@ -111,15 +119,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 19.0
-offset_right = -16.0
-offset_bottom = -19.0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = -20.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("1_uv61j")
+texture = ExtResource("4_lv0wf")
 expand_mode = 1
+stretch_mode = 5
 
 [node name="CardBackFaceTextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -128,8 +137,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_uv61j")
+texture = ExtResource("6_htvh3")
 expand_mode = 1
+
+[node name="DebugLabel" type="Label" parent="."]
+layout_mode = 1
+offset_right = 51.0
+offset_bottom = 23.0
+text = "(20,20)"
+label_settings = SubResource("LabelSettings_xx6j1")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

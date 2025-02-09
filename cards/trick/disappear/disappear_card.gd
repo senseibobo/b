@@ -7,5 +7,9 @@ func check_card_selectable(card: Card):
 
 
 func select_card(card: Card):
-	card.queue_free()
-	queue_free()
+	CardManager.trick_performed.emit()
+	var poof_particles = preload("res://cards/trick/disappear/poof_particles.tscn").instantiate()
+	get_tree().current_scene.add_child(poof_particles)
+	poof_particles.get_card_transform(card)
+	destroy()
+	card.destroy()

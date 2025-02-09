@@ -15,6 +15,7 @@ var sort_children_queued: bool = false
 
 
 func _enter_tree():
+	CardManager.other_card_container = self
 	update_card_spacing()
 	free_spaces = []
 	for i in CARD_COUNT_X:
@@ -26,8 +27,28 @@ func _enter_tree():
 		child_entered_tree.connect(_on_child_entered_tree)
 	if not resized.is_connected(update_card_spacing):
 		resized.connect(update_card_spacing)
+	if not child_exiting_tree.is_connected(_on_child_exiting_tree):
+		child_exiting_tree.connect(_on_child_exiting_tree)
+		
 	for child in get_children():
 		_on_child_entered_tree(child)
+
+
+func _on_child_exiting_tree(child: Node):
+	var container_space = child.get_meta(&"container_space", Vector2i(-1,-1))
+	child.remove_meta(&"container_space")
+	if container_space != Vector2i(-1,-1):
+		container_spaces[container_space] = null
+
+
+func get_cards_in_row(card: Card) -> Array[Card]:
+	var y = card.get_meta(&"container_space").y
+	var row_cards: Array[Card]
+	for x in range(0, CARD_COUNT_X):
+		var row_card = container_spaces[Vector2i(x,y)]
+		if is_instance_valid(row_card) and row_card is Card:
+			row_cards.append(row_card)
+	return row_cards
 
 
 func _process(delta):
@@ -40,8 +61,12 @@ func _on_child_entered_tree(child: Node):
 		var container_space: Vector2i = get_free_container_space()
 		container_spaces[container_space] = child
 		update_child_position(child, container_space)
+		child.position += Vector2(1000,-1000)
 		child.set_meta(&"container_space", container_space)
 		sort_children_queued = true
+		var tween = child.create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(child, "position", get_container_space_position(container_space), 0.5)
+		tween.tween_callback(SoundManager.play_dealing_sound)
 
 
 func sort_children_by_container_space():
@@ -62,16 +87,22 @@ func compare_container_spaces(container_space1: Vector2i, container_space2: Vect
 
 func update_children_positions():
 	for container_space: Vector2i in container_spaces:
-		var child: Control = container_spaces[container_space]
-		if not child: continue
+		var child = container_spaces[container_space]
+		if not is_instance_valid(child): continue
 		else:
 			update_child_position(child, container_space)
 
 
 func update_child_position(child: Control, container_space: Vector2i):
+	var pos = get_container_space_position(container_space)
+	child.position = pos
+
+
+func get_container_space_position(container_space: Vector2i):
 	var pos: Vector2 = Vector2(container_space)
 	pos.x += pos.y/3.0
-	child.position = pos * card_spacing
+	pos *= card_spacing
+	return pos
 
 
 func get_free_container_space() -> Vector2i:
