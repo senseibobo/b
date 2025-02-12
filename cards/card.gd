@@ -101,10 +101,11 @@ func set_rank(rank: int):
 func update_face_texture():
 	if not rank in [1,2,3,4,5,6,7,8,9,10,12,13,14]: return
 	var rank_string: String = str(rank)
+	var extension: String = ".svg"
 	if rank == 1: rank_string = "a"
-	elif rank == 12: rank_string = "j"
-	elif rank == 13: rank_string = "q"
-	elif rank == 14: rank_string = "k"
+	elif rank == 12: rank_string = "jack"
+	elif rank == 13: rank_string = "queen"
+	elif rank == 14: rank_string = "king"
 	var suit_string: String
 	match suit:
 		Suit.SPADES: suit_string = "spades"
@@ -112,8 +113,10 @@ func update_face_texture():
 		Suit.CLUBS: suit_string = "clubs"
 		Suit.DIAMONDS: suit_string = "diamonds"
 	if rank in [12,13,14]:
+		extension = ".png"
 		suit_string = "any"
-	var face_texture: Texture2D = load("res://textures/middle/"+rank_string+"-"+suit_string+".svg")
+		
+	var face_texture: Texture2D = load("res://textures/middle/"+rank_string+"-"+suit_string+extension)
 	card_face_texture_rect.texture = face_texture
 
 
@@ -142,6 +145,7 @@ func _process(delta):
 
 
 func hover():
+	SoundManager.play_hover_sound()
 	card_selectable_color_rect.visible = CardManager.check_card_selectable(self)
 	hovered = true
 	pivot_offset = size/2.0
@@ -166,6 +170,11 @@ func unhover():
 
 func destroy():
 	CardManager.move_card_to_deck(self)
+	var kings = CardManager.cards_on_field[14]
+	var queens = CardManager.cards_on_field[13]
+	if kings.size() == 0 and queens.size() == 0: 
+		if is_instance_valid(get_tree()):
+			get_tree().change_scene_to_file("res://menus/game_over.tscn")
 
 
 func _input(event: InputEvent):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://yduojid2kiuk"]
+[gd_scene load_steps=13 format=3 uid="uid://yduojid2kiuk"]
 
 [ext_resource type="Script" path="res://autoload/sound_manager.gd" id="1_pl644"]
 [ext_resource type="AudioStream" uid="uid://bwu6mia8taaai" path="res://audio/sounds/card_dealing-01.ogg" id="2_cysoo"]
@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://bkpdyigw23i3" path="res://audio/sounds/flick2.ogg" id="6_ix3pm"]
 [ext_resource type="AudioStream" uid="uid://d10x76at1pu05" path="res://audio/sounds/flick4.ogg" id="7_lq8on"]
 [ext_resource type="AudioStream" uid="uid://wlaxnhqssdo5" path="res://audio/sounds/flick3.ogg" id="8_8hmme"]
+[ext_resource type="AudioStream" uid="uid://ckcgfqq26kqie" path="res://audio/music/battle_music.ogg" id="10_0hu7g"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_gas8w"]
 streams_count = 4
@@ -26,14 +27,29 @@ stream_2/stream = ExtResource("8_8hmme")
 stream_2/weight = 0.0
 stream_3/stream = ExtResource("6_ictid")
 
-[node name="SoundManager" type="Node" node_paths=PackedStringArray("dealing_sound_player", "flick_sound_player")]
+[node name="SoundManager" type="Node" node_paths=PackedStringArray("dealing_sound_player", "flick_sound_player", "draw_sound_player", "hover_sound_player", "music_sound_player")]
 script = ExtResource("1_pl644")
 dealing_sound_player = NodePath("DealingSoundPlayer")
 flick_sound_player = NodePath("FlickSoundPlayer")
+draw_sound_player = NodePath("DrawSoundPlayer")
+hover_sound_player = NodePath("HoverSoundPlayer")
+music_sound_player = NodePath("MusicSoundPlayer")
 
 [node name="DealingSoundPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_gas8w")
 
+[node name="DrawSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_gas8w")
+pitch_scale = 0.8
+
+[node name="HoverSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_gas8w")
+volume_db = -6.0
+pitch_scale = 1.5
+
 [node name="FlickSoundPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_qx2nx")
 pitch_scale = 1.2
+
+[node name="MusicSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_0hu7g")

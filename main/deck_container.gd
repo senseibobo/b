@@ -67,6 +67,7 @@ func draw_cards(any: int, jacks: int = 0, queens: int = 0, kings: int = 0, norma
 		if get_child_count() == 0: break
 		drawn_cards.append(card)
 		var tween: Tween = create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
+		SoundManager.play_draw_sound()
 		tween.tween_property(card, "position", card.position + Vector2(1000,-1000), 0.8)
 		tween.tween_property(card, "in_deck", false, 0.0)
 		tween.tween_callback(remove_child.bind(card))
@@ -122,6 +123,7 @@ func claim_cards(cards: Array[Card], from_bottom: bool = false):
 		tween.tween_property(card, "z_index", 0, 0.0)
 		tween.tween_callback(SoundManager.play_flick_sound)
 		last_tween = tween
+		if not is_instance_valid(get_tree()): return
 		await get_tree().create_timer(0.03).timeout
 		
 	if last_tween and last_tween.is_running():

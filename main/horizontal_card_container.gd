@@ -19,6 +19,7 @@ func _enter_tree():
 func _on_child_exiting_tree(child: Node):
 	custom_minimum_size.x = max(get_child_count()*80 + (get_child_count()-1)*5,0)
 	size.x = custom_minimum_size.x
+	update_child_positions()
 
 
 func _on_child_entered_tree(child: Node):

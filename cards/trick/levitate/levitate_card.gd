@@ -1,6 +1,9 @@
 class_name LevitateCard
 extends TrickCard
 
+func _ready():
+	super()
+	Tooltips.add_tooltip(self, "Levitate", "Increases the ranks of every card in the row by 1.", "")
 
 func check_card_selectable(card: Card):
 	return card.rank in [2,3,4,5,6,7,8,9,10]

@@ -19,16 +19,22 @@ func _enter_tree():
 func _ready():
 	CardManager.trick_performed.connect(_on_trick_performed)
 	CardManager.drew_trick_cards.connect(_on_drew_trick_cards)
-	cards_out = false
+	set_cards_out(false)
 
 
 func _on_trick_performed():
-	cards_out = false
+	set_cards_out(false)
 
 
 func _on_drew_trick_cards():
 	await get_tree().create_timer(0.7).timeout
-	cards_out = true
+	set_cards_out(true)
+
+
+func set_cards_out(a):
+	if a == true and cards_out == false:
+		SoundManager.play_dealing_sound()
+	cards_out = a
 
 
 func _process(delta):

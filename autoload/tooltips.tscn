@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3 uid="uid://dh7h8g578pw3e"]
+
+[ext_resource type="Script" path="res://autoload/tooltips.gd" id="1_6j85o"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_4tq7v"]
+outline_size = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_og17k"]
+font_size = 12
+font_color = Color(0.687215, 0.687215, 0.687215, 1)
+
+[node name="Tooltips" type="CanvasLayer" node_paths=PackedStringArray("tooltip_panel", "title_label", "description_label", "disclaimer_label")]
+layer = 10
+script = ExtResource("1_6j85o")
+tooltip_panel = NodePath("TooltipPanel")
+title_label = NodePath("TooltipPanel/MarginContainer/VBoxContainer/TitleLabel")
+description_label = NodePath("TooltipPanel/MarginContainer/VBoxContainer/DescriptionLabel")
+disclaimer_label = NodePath("TooltipPanel/MarginContainer/VBoxContainer/DisclaimerLabel")
+
+[node name="TooltipPanel" type="PanelContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="TooltipPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TooltipPanel/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TitleLabel" type="Label" parent="TooltipPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Disappear"
+label_settings = SubResource("LabelSettings_4tq7v")
+
+[node name="DescriptionLabel" type="Label" parent="TooltipPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Makes a card disappear"
+
+[node name="DisclaimerLabel" type="Label" parent="TooltipPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "(only works on numbered cards)"
+label_settings = SubResource("LabelSettings_og17k")

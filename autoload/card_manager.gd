@@ -56,6 +56,7 @@ func _ready():
 
 
 func move_card_to_deck(card: Card):
+	if card.rank <= 1: card.rank = randi()%8+2
 	if card.in_deck:
 		CardManager.cards_in_deck[card.rank].erase(card)
 	else:
@@ -79,11 +80,17 @@ func generate_normal_deck():
 	
 
 func generate_trick_deck():
-	for i in 8:
-		var disappear_card: DisappearCard = preload("res://cards/trick/disappear/disappear_card.tscn").instantiate()
-		add_trick_card(disappear_card)
-		var levitate: LevitateCard = preload("res://cards/trick/levitate/levitate_card.tscn").instantiate()
-		add_trick_card(levitate)
+	var available_scenes = [
+		preload("res://cards/trick/disappear/disappear_card.tscn"),
+		preload("res://cards/trick/levitate/levitate_card.tscn"),
+		preload("res://cards/trick/gravity/gravity_card.tscn"),
+		preload("res://cards/trick/plus_two/plus_two.tscn"),
+		preload("res://cards/trick/minus_two/minus_two.tscn"),
+	]
+	for scene in available_scenes:
+		for i in 4:
+			var trick_card: TrickCard = scene.instantiate()
+			trick_deck.append(trick_card)
 	trick_deck.shuffle()
 	await trick_deck_container.claim_cards(trick_deck)
 	trick_deck_ready = true
@@ -103,6 +110,13 @@ func check_game_start():
 
 func modify_card_rank(card: Card, new_rank: int):
 	var old_rank = card.rank
+	if new_rank <= 1:
+		var poof = preload("res://cards/trick/disappear/poof_particles.tscn").instantiate()
+		get_tree().current_scene.add_child(poof)
+		poof.get_card_transform(card)
+	if new_rank <= 0: 
+		card.destroy()
+		return
 	if new_rank == 11: new_rank = 1
 	card.rank = new_rank
 	if card.in_deck:
@@ -140,6 +154,7 @@ func draw_trick_cards(count: int) -> Array[Card]:
 
 
 func check_card_selectable(card: Card):
+	if card.in_deck: return false
 	if selected_trick == null:
 		if card.rank == 1 and game_state == GameState.PERFORM_TRICK: 
 			return true
@@ -167,6 +182,7 @@ func shoot_ace(ace: Card):
 		available_targets = cards_on_field[13].duplicate()
 		available_targets.append_array(cards_on_field[14])
 	target = available_targets.pick_random()
+	if target == null: return
 	var old_pos = ace.global_position
 	ace.reparent(get_tree().current_scene)
 	ace.global_position = old_pos
@@ -176,6 +192,10 @@ func shoot_ace(ace: Card):
 	tween.tween_property(ace, "pivot_offset", Vector2(40,55),0.3).from(Vector2(40,55))
 	tween.tween_property(ace, "global_position", target.global_position, 0.3)
 	tween.tween_property(ace, "rotation_degrees", ace.rotation_degrees + 900, 0.3)
+	tween.tween_property(ace,"scale", Vector2(-1,1), 0.3)
+	tween.chain()
+	tween.tween_property(ace,"scale",Vector2(1,1), 0.0)
+	tween.tween_property(ace,"rotation_degrees",0.0, 0.0)
 	await tween.finished
 	target.destroy()
 	ace.destroy()

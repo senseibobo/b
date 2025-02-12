@@ -11,6 +11,7 @@ extends Control
 
 
 func _ready():
+	SoundManager.play_music(preload("res://audio/music/battle_music.ogg"))
 	CardManager.game_started.connect(draw_normal_cards.bind(true))
 	CardManager.trick_performed.connect(draw_normal_cards)
 	CardManager.drew_normal_cards.connect(draw_trick_cards)

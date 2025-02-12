@@ -34,6 +34,27 @@ func _enter_tree():
 		_on_child_entered_tree(child)
 
 
+
+func fall_down():
+	for x in range(0, CARD_COUNT_X):
+		var fall_distance: int = 0
+		for _y in range(0, CARD_COUNT_Y):
+			var y = CARD_COUNT_Y-_y-1
+			var container_space := Vector2i(x,y)
+			var card: Card = container_spaces[container_space]
+			if card != null:
+				if fall_distance > 0:
+					var new_container_space = container_space + Vector2i(0,fall_distance)
+					container_spaces[container_space] = null
+					container_spaces[new_container_space] = card
+					card.set_meta(&"container_space", new_container_space)
+					var tween = card.create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+					tween.tween_property(card, "position", get_container_space_position(new_container_space), 0.2)
+			else:
+				fall_distance += 1
+				
+
+
 func _on_child_exiting_tree(child: Node):
 	var container_space = child.get_meta(&"container_space", Vector2i(-1,-1))
 	child.remove_meta(&"container_space")

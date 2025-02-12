@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://ba5rp2hl76ope"]
+[gd_scene load_steps=4 format=3 uid="uid://ba5rp2hl76ope"]
 
 [ext_resource type="PackedScene" uid="uid://6x6b1vtmy11y" path="res://cards/trick/trick_card.tscn" id="1_qvjhx"]
 [ext_resource type="Script" path="res://cards/trick/levitate/levitate_card.gd" id="2_lu066"]
+[ext_resource type="Texture2D" uid="uid://bmu3qjm8ose5w" path="res://textures/tricks/levitation.png" id="3_u3ccq"]
 
 [node name="LevitateCard" instance=ExtResource("1_qvjhx")]
 script = ExtResource("2_lu066")
@@ -10,6 +11,7 @@ script = ExtResource("2_lu066")
 modulate = Color(0, 0, 0, 1)
 offset_left = 29.0
 offset_right = -29.0
+texture = ExtResource("3_u3ccq")
 
 [node name="CardBackFaceTextureRect" parent="." index="5"]
 visible = false

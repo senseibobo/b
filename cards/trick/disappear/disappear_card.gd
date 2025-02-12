@@ -1,6 +1,9 @@
 class_name DisappearCard
 extends TrickCard
 
+func _ready():
+	super()
+	Tooltips.add_tooltip(self, "Vanish", "Makes the selected card disappear.", "")
 
 func check_card_selectable(card: Card):
 	return card.rank in [1,2,3,4,5,6,7,8,9,10,12]
