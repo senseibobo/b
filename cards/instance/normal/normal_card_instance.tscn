@@ -1,0 +1,53 @@
+[gd_scene load_steps=9 format=3 uid="uid://b6t8eb482ecav"]
+
+[ext_resource type="PackedScene" uid="uid://w0c7yrgk4dp" path="res://cards/instance/card_instance.tscn" id="1_80aqk"]
+[ext_resource type="Script" path="res://cards/instance/normal/normal_card_instance.gd" id="2_moyx3"]
+[ext_resource type="Script" path="res://cards/info/normal_card_info.gd" id="3_lhqgk"]
+[ext_resource type="Script" path="res://cards/instance/normal/normal_card_visuals.gd" id="3_oar2q"]
+[ext_resource type="Texture2D" uid="uid://bpo7u84tkapav" path="res://textures/suits/clubs.svg" id="4_5bgfy"]
+[ext_resource type="Texture2D" uid="uid://bg6ow7goakpwv" path="res://textures/ranks/2.svg" id="5_d78tx"]
+[ext_resource type="Texture2D" uid="uid://ddky2e1xane0o" path="res://textures/middle/2-clubs.svg" id="6_esxr5"]
+
+[sub_resource type="Resource" id="Resource_s2ops"]
+script = ExtResource("3_lhqgk")
+suit = 2
+rank = 6
+
+[node name="NormalCardInstance" node_paths=PackedStringArray("card_visuals") instance=ExtResource("1_80aqk")]
+script = ExtResource("2_moyx3")
+card_visuals = NodePath("CardCenter/CardVisuals")
+card_info = SubResource("Resource_s2ops")
+
+[node name="CardVisuals" parent="CardCenter" index="0" node_paths=PackedStringArray("top_suit_sprite", "top_rank_sprite", "bottom_suit_sprite", "bottom_rank_sprite", "middle_sprite")]
+script = ExtResource("3_oar2q")
+card_info = null
+top_suit_sprite = NodePath("CardFrontSprite/TopSuitSprite")
+top_rank_sprite = NodePath("CardFrontSprite/TopRankSprite")
+bottom_suit_sprite = NodePath("CardFrontSprite/BottomSuitSprite")
+bottom_rank_sprite = NodePath("CardFrontSprite/BottomRankSprite")
+middle_sprite = NodePath("CardFrontSprite/MiddleSprite")
+
+[node name="TopSuitSprite" type="Sprite2D" parent="CardCenter/CardVisuals/CardFrontSprite" index="0"]
+position = Vector2(-310, -300)
+texture = ExtResource("4_5bgfy")
+
+[node name="TopRankSprite" type="Sprite2D" parent="CardCenter/CardVisuals/CardFrontSprite" index="1"]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(-310, -450)
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("5_d78tx")
+
+[node name="BottomSuitSprite" type="Sprite2D" parent="CardCenter/CardVisuals/CardFrontSprite" index="2"]
+position = Vector2(310, 300)
+rotation = -3.14159
+texture = ExtResource("4_5bgfy")
+
+[node name="BottomRankSprite" type="Sprite2D" parent="CardCenter/CardVisuals/CardFrontSprite" index="3"]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(310, 450)
+rotation = -3.14159
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("5_d78tx")
+
+[node name="MiddleSprite" type="Sprite2D" parent="CardCenter/CardVisuals/CardFrontSprite" index="4"]
+texture = ExtResource("6_esxr5")

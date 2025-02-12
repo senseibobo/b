@@ -1,17 +1,283 @@
-[gd_scene load_steps=13 format=3 uid="uid://dgoggqcjip6cw"]
+[gd_scene load_steps=21 format=3 uid="uid://dgoggqcjip6cw"]
 
-[ext_resource type="PackedScene" uid="uid://caw7ke00kdes2" path="res://cards/card.tscn" id="1_4sytf"]
 [ext_resource type="Script" path="res://main/main_scene.gd" id="1_a1t3e"]
-[ext_resource type="PackedScene" uid="uid://6x6b1vtmy11y" path="res://cards/trick/trick_card.tscn" id="3_3emm7"]
+[ext_resource type="Texture2D" uid="uid://s4phd8i0v6yq" path="res://textures/card/card_front.png" id="2_wtebi"]
 [ext_resource type="Script" path="res://main/other_card_container.gd" id="3_bpqx1"]
+[ext_resource type="Texture2D" uid="uid://bg6ow7goakpwv" path="res://textures/ranks/2.svg" id="3_cv0gy"]
 [ext_resource type="Script" path="res://main/hand_container.gd" id="3_ecvgb"]
+[ext_resource type="Texture2D" uid="uid://bpo7u84tkapav" path="res://textures/suits/clubs.svg" id="4_ijwt7"]
+[ext_resource type="Texture2D" uid="uid://uf7osu5lgaeq" path="res://textures/middle/q-any.svg" id="5_1d84r"]
 [ext_resource type="Texture2D" uid="uid://dd8w7vf3erdfn" path="res://textures/hand/hand.png" id="5_05l5g"]
 [ext_resource type="Script" path="res://main/ace_sleeve.gd" id="6_5vybq"]
+[ext_resource type="Texture2D" uid="uid://dxe8tdbbf13su" path="res://textures/card/card_back.png" id="6_moyry"]
 [ext_resource type="Texture2D" uid="uid://ca1i1itmt8kv0" path="res://textures/hand/sleeve_above.png" id="7_63vp5"]
 [ext_resource type="Script" path="res://main/horizontal_card_container.gd" id="7_n3rki"]
 [ext_resource type="Texture2D" uid="uid://kcq2heox7ffi" path="res://textures/hand/sleeve_below.png" id="8_sum86"]
 [ext_resource type="Script" path="res://main/deck_container.gd" id="8_wpl0e"]
-[ext_resource type="Texture2D" uid="uid://clix5awyot8b5" path="res://textures/field_background.png" id="12_5tsb1"]
+[ext_resource type="Texture2D" uid="uid://clix5awyot8b5" path="res://textures/ui/field_background.png" id="12_5tsb1"]
+
+[sub_resource type="GDScript" id="GDScript_8slet"]
+script/source = "class_name NormalCardInstance
+extends CardInstance
+
+
+signal pressed
+
+
+static var hovered_card: Card
+
+
+
+@export var card_face_texture_rect: TextureRect
+@export var top_card_rank_texture_rect: TextureRect
+@export var bottom_card_rank_texture_rect: TextureRect
+@export var top_card_suit_texture_rect: TextureRect
+@export var bottom_card_suit_texture_rect: TextureRect
+@export var card_selectable_color_rect: ColorRect
+@export var card_back_face_texture_rect: TextureRect
+
+var hovered: bool = false
+var tween: Tween
+var in_deck: bool = true:
+	set(value):
+		card_back_face_texture_rect.visible = in_deck
+		in_deck = value
+	get:
+		return in_deck
+
+
+
+func _enter_tree():
+	card_back_face_texture_rect.visible = in_deck
+
+
+func _ready():
+	card_selectable_color_rect.visible = false
+	setup(suit,rank)
+	pass
+	#setup(Suit.values().pick_random(), randi()%14+1)
+
+
+func setup(suit: Suit, rank: int):
+	set_suit(suit)
+	set_rank(rank)
+
+
+func set_suit(suit: Suit):
+	self.suit = suit
+	var suit_texture: Texture2D
+	var suit_color: Color
+	match suit:
+		Suit.SPADES: 
+			suit_texture = preload(\"res://textures/spades.svg\")
+		Suit.CLUBS: 
+			suit_texture = preload(\"res://textures/clubs.svg\")
+		Suit.DIAMONDS: 
+			suit_texture = preload(\"res://textures/diamonds.svg\")
+		Suit.HEARTS:
+			suit_texture = preload(\"res://textures/hearts.svg\")
+	bottom_card_suit_texture_rect.texture = suit_texture
+	top_card_suit_texture_rect.texture = suit_texture
+	update_suit_color()
+	update_face_texture()
+
+
+func set_rank(rank: int):
+	if rank == 11: rank = 1
+	self.rank = rank
+	var rank_texture: Texture2D
+	match rank:
+		1: rank_texture = preload(\"res://textures/a.svg\")
+		2: rank_texture = preload(\"res://textures/2.svg\")
+		3: rank_texture = preload(\"res://textures/3.svg\")
+		4: rank_texture = preload(\"res://textures/4.svg\")
+		5: rank_texture = preload(\"res://textures/5.svg\")
+		6: rank_texture = preload(\"res://textures/6.svg\")
+		7: rank_texture = preload(\"res://textures/7.svg\")
+		8: rank_texture = preload(\"res://textures/8.svg\")
+		9: rank_texture = preload(\"res://textures/9.svg\")
+		10: rank_texture = preload(\"res://textures/10.svg\")
+		12: rank_texture = preload(\"res://textures/j.svg\")
+		13: rank_texture = preload(\"res://textures/q.svg\")
+		14: rank_texture = preload(\"res://textures/k.svg\")
+	top_card_rank_texture_rect.texture = rank_texture
+	bottom_card_rank_texture_rect.texture = rank_texture
+	if rank == 1 and not in_deck:
+		CardManager.on_turned_into_ace(self)
+	update_face_texture()
+
+
+func update_face_texture():
+	if not rank in [1,2,3,4,5,6,7,8,9,10,12,13,14]: return
+	var rank_string: String = str(rank)
+	var extension: String = \".svg\"
+	if rank == 1: rank_string = \"a\"
+	elif rank == 12: rank_string = \"jack\"
+	elif rank == 13: rank_string = \"queen\"
+	elif rank == 14: rank_string = \"king\"
+	var suit_string: String
+	match suit:
+		Suit.SPADES: suit_string = \"spades\"
+		Suit.HEARTS: suit_string = \"hearts\"
+		Suit.CLUBS: suit_string = \"clubs\"
+		Suit.DIAMONDS: suit_string = \"diamonds\"
+	if rank in [12,13,14]:
+		extension = \".png\"
+		suit_string = \"any\"
+		
+	var face_texture: Texture2D = load(\"res://textures/middle/\"+rank_string+\"-\"+suit_string+extension)
+	card_face_texture_rect.texture = face_texture
+
+
+func update_suit_color():
+	var color: Color
+	if suit in [Suit.SPADES, Suit.CLUBS]: color = Color.BLACK
+	else: color = Color(\"#eb4034\")
+	top_card_rank_texture_rect.modulate = color
+	bottom_card_rank_texture_rect.modulate = color
+
+
+func _on_mouse_entered() -> void:
+	hover()
+
+
+func _on_mouse_exited() -> void:
+	unhover()
+
+
+func _process(delta):
+	if has_meta(&\"container_space\"):
+		$DebugLabel.text = str(get_meta(&\"container_space\"))
+		$DebugLabel.visible = false
+	else:
+		$DebugLabel.visible = false
+
+
+func hover():
+	SoundManager.play_hover_sound()
+	card_selectable_color_rect.visible = CardManager.check_card_selectable(self)
+	hovered = true
+	pivot_offset = size/2.0
+	if hovered_card != null: hovered_card.unhover()
+	hovered_card = self
+	z_index = 5
+	if tween and tween.is_running(): tween.kill()
+	tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(self, \"scale\", Vector2(1.2,1.2), 0.2)
+
+
+func unhover():
+	card_selectable_color_rect.visible = false
+	hovered = false
+	if hovered_card == self: hovered_card = null
+	z_index = 0
+	if not CardManager.selected_trick == self:
+		if tween and tween.is_running(): tween.kill()
+		tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(self, \"scale\", Vector2(1.0,1.0), 0.1)
+
+
+func destroy():
+	CardManager.move_card_to_deck(self)
+	var kings = CardManager.cards_on_field[14]
+	var queens = CardManager.cards_on_field[13]
+	if kings.size() == 0 and queens.size() == 0: 
+		if is_instance_valid(get_tree()):
+			get_tree().change_scene_to_file(\"res://menus/game_over.tscn\")
+
+
+func _input(event: InputEvent):
+	if event is InputEventMouseButton:
+		if hovered and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			pressed.emit()
+			CardManager.on_card_pressed(self)
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_xx6j1"]
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PackedScene" id="PackedScene_kg870"]
+_bundled = {
+"conn_count": 2,
+"conns": PackedInt32Array(0, 0, 49, 48, 2, 0, 0, 0, 0, 51, 50, 2, 0, 0),
+"editable_instances": [],
+"names": PackedStringArray("Card", "custom_minimum_size", "layout_mode", "anchors_preset", "size_flags_horizontal", "size_flags_vertical", "script", "card_face_texture_rect", "top_card_rank_texture_rect", "bottom_card_rank_texture_rect", "top_card_suit_texture_rect", "bottom_card_suit_texture_rect", "card_selectable_color_rect", "card_back_face_texture_rect", "card", "Control", "CardSelectable", "visible", "anchor_right", "anchor_bottom", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "grow_vertical", "mouse_filter", "color", "ColorRect", "CardFrame", "texture", "expand_mode", "TextureRect", "TopCardRankTextureRect", "modulate", "pivot_offset", "stretch_mode", "CardSuitTextureRect", "anchor_top", "BottomCardRankTextureRect", "anchor_left", "rotation", "CardFaceTextureRect", "CardBackFaceTextureRect", "DebugLabel", "text", "label_settings", "Label", "_on_mouse_entered", "mouse_entered", "_on_mouse_exited", "mouse_exited"),
+"node_count": 10,
+"node_paths": [],
+"nodes": PackedInt32Array(-1, -1, 15, 0, -1, 13, 1, 0, 2, 1, 3, 2, 4, 3, 5, 3, 6, 4, 1073741831, 5, 1073741832, 6, 1073741833, 7, 1073741834, 8, 1073741835, 9, 1073741836, 10, 1073741837, 11, 1, 14, 0, 0, 28, 16, -1, 13, 17, 12, 2, 13, 3, 14, 18, 15, 19, 15, 20, 16, 21, 16, 22, 17, 23, 17, 24, 18, 25, 18, 26, 18, 27, 19, 0, 0, 0, 32, 29, -1, 9, 2, 13, 3, 14, 18, 15, 19, 15, 24, 18, 25, 18, 26, 18, 30, 20, 31, 13, 0, 0, 0, 32, 33, -1, 11, 34, 21, 2, 13, 20, 17, 21, 17, 22, 22, 23, 22, 35, 23, 26, 18, 30, 24, 31, 13, 36, 25, 0, 3, 0, 32, 37, -1, 12, 2, 13, 3, 26, 38, 15, 18, 15, 19, 15, 21, 27, 23, 28, 24, 18, 25, 2, 26, 18, 30, 29, 31, 13, 0, 0, 0, 32, 39, -1, 19, 34, 21, 2, 13, 3, 1, 40, 15, 38, 15, 18, 15, 19, 15, 20, 30, 21, 30, 22, 16, 23, 16, 24, 2, 25, 2, 41, 31, 35, 32, 26, 18, 30, 24, 31, 13, 36, 25, 0, 5, 0, 32, 37, -1, 12, 2, 13, 3, 26, 38, 15, 18, 15, 19, 15, 21, 27, 23, 28, 24, 18, 25, 2, 26, 18, 30, 29, 31, 13, 0, 0, 0, 32, 42, -1, 14, 2, 13, 3, 14, 18, 15, 19, 15, 20, 33, 21, 34, 22, 35, 23, 36, 24, 18, 25, 18, 26, 18, 30, 37, 31, 13, 36, 25, 0, 0, 0, 32, 43, -1, 8, 2, 13, 3, 14, 18, 15, 19, 15, 24, 18, 25, 18, 30, 38, 31, 13, 0, 0, 0, 47, 44, -1, 5, 2, 13, 22, 39, 23, 40, 45, 41, 46, 42, 0),
+"variants": [Vector2(80, 110), 3, 0, 4, SubResource("GDScript_8slet"), NodePath("CardFaceTextureRect"), NodePath("TopCardRankTextureRect"), NodePath("BottomCardRankTextureRect"), NodePath("TopCardRankTextureRect/CardSuitTextureRect"), NodePath("BottomCardRankTextureRect/CardSuitTextureRect"), NodePath("CardSelectable"), NodePath("CardBackFaceTextureRect"), false, 1, 15, 1.0, -2.0, 2.0, 2, Color(1, 1, 0, 1), ExtResource("2_wtebi"), Color(0, 0, 0, 1), 18.0, Vector2(20, 11.5), ExtResource("3_cv0gy"), 5, 12, 3.0, 19.0, ExtResource("4_ijwt7"), -18.0, 3.14159, Vector2(8, 8), 20.0, 10.0, -20.0, -10.0, ExtResource("5_1d84r"), ExtResource("6_moyry"), 51.0, 23.0, "(20,20)", SubResource("LabelSettings_xx6j1")],
+"version": 3
+}
+
+[sub_resource type="GDScript" id="GDScript_t8epx"]
+script/source = "class_name TrickCard
+extends Card
+
+
+@export var cost: int
+
+
+func _ready() -> void:
+	super()
+	pressed.connect(_on_pressed)
+	CardManager.trick_performed.connect(deselect)
+
+
+func deselect():
+	if CardManager.selected_trick == self:
+		CardManager.selected_trick = null
+		unhover()
+
+func select():
+	if CardManager.game_state == CardManager.GameState.PERFORM_TRICK:
+		if CardManager.selected_trick != null:
+			var old_selected_trick = CardManager.selected_trick
+			CardManager.selected_trick = null
+			old_selected_trick.unhover()
+		CardManager.selected_trick = self
+
+
+func _on_pressed():
+	if CardManager.selected_trick == self:
+		deselect()
+	else:
+		select()
+
+
+func check_card_selectable(card: Card):
+	return false
+
+
+func select_card(card: Card):
+	pass
+
+
+func destroy():
+	if in_deck:
+		CardManager.cards_in_deck[\"trick\"].erase(self)
+	else:
+		CardManager.cards_on_field[\"trick\"].erase(self)
+	queue_free()
+
+
+func update_face_texture():
+	pass
+"
+
+[sub_resource type="PackedScene" id="PackedScene_n4o7y"]
+_bundled = {
+"base_scene": 0,
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("TrickCard", "script", "cost", "TopCardRankTextureRect", "visible", "BottomCardRankTextureRect", "visible"),
+"node_count": 3,
+"node_paths": [NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 2147483647, 0, -1, 2, 1, 1, 2, 2, 0, 1073741824, -1, 2147483647, 786435, -1, 1, 4, 3, 0, 1073741825, -1, 2147483647, 1048581, -1, 1, 6, 4, 0),
+"variants": [SubResource("PackedScene_kg870"), SubResource("GDScript_t8epx"), 0, false, false],
+"version": 3
+}
 
 [node name="MainScene" type="Control" node_paths=PackedStringArray("king_queen_container", "jack_container", "other_card_container", "hand_container")]
 layout_mode = 3
@@ -25,8 +291,8 @@ king_queen_container = NodePath("MainContainer/GameContainer/KingQueenContainer"
 jack_container = NodePath("MainContainer/GameContainer/JackContainer")
 other_card_container = NodePath("MainContainer/GameContainer/PanelContainer/MarginContainer/OtherCardContainer")
 hand_container = NodePath("MainContainer/Hand/HandContainer")
-card_scene = ExtResource("1_4sytf")
-trick_card_scene = ExtResource("3_3emm7")
+card_scene = SubResource("PackedScene_kg870")
+trick_card_scene = SubResource("PackedScene_n4o7y")
 
 [node name="MainContainer" type="HBoxContainer" parent="."]
 layout_mode = 1

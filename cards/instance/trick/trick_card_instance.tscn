@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dwvgp0aenr3m8"]
+
+[ext_resource type="PackedScene" uid="uid://w0c7yrgk4dp" path="res://cards/instance/card_instance.tscn" id="1_r06ml"]
+[ext_resource type="Script" path="res://cards/instance/trick/trick_card_instance.gd" id="2_2srpq"]
+
+[node name="TrickCardInstance" instance=ExtResource("1_r06ml")]
+script = ExtResource("2_2srpq")
+card_info = null
