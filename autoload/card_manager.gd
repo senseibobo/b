@@ -31,7 +31,15 @@ var normal_deck_ready: bool = false
 var trick_deck_ready: bool = false
 
 
-var game_state: GameState
+var game_state: GameState:
+	set(value):
+		var total = 0
+		for rank in cards_in_deck:
+			print(rank,": ", cards_in_deck[rank].size())
+			total += cards_in_deck[rank].size()
+		print("total: ", total)
+		game_state = value
+	get: return game_state
 var selected_trick: TrickCard
 
 
@@ -45,10 +53,10 @@ func _enter_tree():
 
 func _ready():
 	game_started.emit()
-	game_started.connect(func(): game_state = GameState.DRAW_NORMAL)
-	drew_normal_cards.connect(func(): game_state = GameState.DRAW_TRICK)
-	drew_trick_cards.connect(func(): game_state = GameState.PERFORM_TRICK)
-	trick_performed.connect(func(): game_state = GameState.DRAW_NORMAL)
+	game_started.connect(func(): self.game_state = GameState.DRAW_NORMAL)
+	drew_normal_cards.connect(func(): self.game_state = GameState.DRAW_TRICK)
+	drew_trick_cards.connect(func(): self.game_state = GameState.PERFORM_TRICK)
+	trick_performed.connect(func(): self.game_state = GameState.DRAW_NORMAL)
 	
 	#while true:
 		#await get_tree().create_timer(0.5).timeout
@@ -197,7 +205,7 @@ func shoot_ace(ace: Card):
 	tween.tween_property(ace,"scale",Vector2(1,1), 0.0)
 	tween.tween_property(ace,"rotation_degrees",0.0, 0.0)
 	await tween.finished
-	target.destroy()
+	target.destroy(true)
 	ace.destroy()
 	
 

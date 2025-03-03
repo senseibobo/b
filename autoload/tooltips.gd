@@ -35,7 +35,6 @@ func add_tooltip(control: Control, title, description, disclaimer):
 
 
 func _on_mouse_entered(control: Control):
-	print("batong")
 	time_still = 0.0
 	last_hovered = control
 
@@ -50,7 +49,6 @@ func _process(delta):
 	if not tooltip_panel.visible and is_instance_valid(last_hovered):
 		var tooltip_info = last_hovered.get_meta(&"tooltip_info", null)
 		time_still += delta
-		print(time_still)
 		if time_still >= 0.01:
 			show_tooltip(tooltip_panel.get_global_mouse_position(), tooltip_info)
 		

@@ -168,13 +168,15 @@ func unhover():
 		tween.tween_property(self, "scale", Vector2(1.0,1.0), 0.1)
 
 
-func destroy():
+func destroy(randomize_rank: bool = false):
 	CardManager.move_card_to_deck(self)
 	var kings = CardManager.cards_on_field[14]
 	var queens = CardManager.cards_on_field[13]
 	if kings.size() == 0 and queens.size() == 0: 
 		if is_instance_valid(get_tree()):
 			get_tree().change_scene_to_file("res://menus/game_over.tscn")
+	if randomize_rank:
+		set_rank([2,3,4,5,6,7,8,9,10].pick_random())
 
 
 func _input(event: InputEvent):

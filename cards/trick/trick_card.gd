@@ -40,7 +40,7 @@ func select_card(card: Card):
 	pass
 
 
-func destroy():
+func destroy(randomize_rank: bool = false):
 	if in_deck:
 		CardManager.cards_in_deck["trick"].erase(self)
 	else:
