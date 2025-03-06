@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://dgoggqcjip6cw"]
 
-[ext_resource type="PackedScene" uid="uid://caw7ke00kdes2" path="res://cards/card.tscn" id="1_4sytf"]
+[ext_resource type="PackedScene" path="res://cards/card.tscn" id="1_4sytf"]
 [ext_resource type="Script" path="res://main/main_scene.gd" id="1_a1t3e"]
 [ext_resource type="PackedScene" uid="uid://6x6b1vtmy11y" path="res://cards/trick/trick_card.tscn" id="3_3emm7"]
 [ext_resource type="Script" path="res://main/other_card_container.gd" id="3_bpqx1"]

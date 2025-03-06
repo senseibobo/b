@@ -50,6 +50,8 @@ func draw_trick_cards():
 	var cards = await CardManager.draw_trick_cards(4-trick_cards_in_hand)
 	for card in cards:
 		add_trick_card(card)
+	if CardManager.cards_on_field["trick"].size() == 0:
+		get_tree().change_scene_to_file("res://menus/game_over.tscn")
 	CardManager.drew_trick_cards.emit()
 
 

@@ -27,8 +27,9 @@ func _on_trick_performed():
 
 
 func _on_drew_trick_cards():
-	await get_tree().create_timer(0.7).timeout
-	set_cards_out(true)
+	if is_instance_valid(get_tree()):
+		await get_tree().create_timer(0.7).timeout
+		set_cards_out(true)
 
 
 func set_cards_out(a):
